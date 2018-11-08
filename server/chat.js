@@ -66,7 +66,11 @@ class Chat {
   }
 
   handleMsgBroadcast(socket) {
-
+    socket.on('message', msg => {
+      socket.broadcast.to(msg.room).emit('message', {
+        text: `${this.nickNames[socket.id]}: ${msg.text}`,
+      })
+    })
   }
   
   handleNameChange(socket) {
@@ -93,10 +97,20 @@ class Chat {
   }
 
   handleRoomChange(socket) {
-
+    socket.on('join', room => {
+      socket.leave(this.currentRoom[socket.id])
+      this.assignName(socket, room.newRoom)
+    })
   }
+  
   handleDisconnection(socket) {
-
+    socket.on('disconnect', () => {
+      socket.broadcast.to(this.currentRoom[socket.id]).emit('message', {
+        text: `${this.nickNames[socket.id]} leave this room.`,
+      })
+      this.usedNames = this.usedNames.filter(item => item !== this.nickNames[socket.id])
+      delete this.nickNames[socket.id]
+    })
   }
 }
 

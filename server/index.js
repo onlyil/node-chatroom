@@ -1,7 +1,7 @@
 const Koa = require('koa')
 const logger = require('koa-logger')
 const serve = require('koa-static')
-const Chat = require('./lib/chat')
+const Chat = require('./chat')
 
 const app = new Koa()
 
