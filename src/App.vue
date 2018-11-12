@@ -1,17 +1,41 @@
 <template>
   <div class="container">
     <div class="msg-box">
-      <div class="room-name">chatname</div>
-      <div class="content"></div>
+      <div class="room-name">{{ room }}</div>
+      <div class="content">
+        <div
+          class="message-item"
+          v-for="(item, index) in messageList"
+          :key="index">
+          <div
+            class="self"
+            v-if="item.type === 0">
+            <p class="nickname">{{ item.nickname }}</p>
+            <div class="message right-angle">{{ item.message }}</div>
+          </div>
+          <div v-else-if="item.type === 1">
+            <p class="nickname">{{ item.nickname }}</p>
+            <p class="message left-angle">{{ item.message }}</p>
+          </div>
+          <div
+            class="notify-box"
+            v-else>
+            <p class="notify">{{ item.message }}</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="send-box">
       <el-input
         class="send-input"
         v-model="message"
-        placeholder="..."></el-input>
+        @keyup.native.enter="sendMessage"
+        placeholder="..."
+        autofocus></el-input>
       <el-button
         type="primary"
-        @click="sendMessage">Send</el-button>
+        @click="sendMessage"
+        plain>Send</el-button>
     </div>
     <div class="tip">
       <p>Chat commands:</p>
@@ -34,21 +58,70 @@ export default {
     return {
       socket: null,
       chat: null,
+      room: '',
+      nickname: '',
       message: '',
+      messageList: [
+        {
+          type: 2,
+          message: 'welcome!',
+        },
+        {
+          type: 0,
+          message: 'nihao',
+          nickname: 'only',
+        },
+        {
+          type: 1,
+          message: 'sasdfsdf 爱死扽龙看 阿龙防老接龙啊负担来看蓝来 了',
+          nickname: 'Guest',
+        }
+      ],
     }
   },
   created() {
-    this.chat = new Chat()
     this.socket = io(env.socketUrl)
+    this.chat = new Chat(this.socket)
+    this.socket.on('connect', () => {
+      console.log('连接了！！')
+    })
+    this.socket.on('nameResult', (msg) => {
+      this.nickname = msg.name
+      this.$notify({
+        title: '提示',
+        message: `初始名字为 ${msg.name} ，您可以使用命令修改`,
+        duration: 3000,
+      })
+    })
+    this.socket.on('joinResult', (msg) => {
+      this.room = msg.room
+    })
+    this.socket.on('message', (msg) => {
+      this.messageList.push({
+        type: 1, // 0: self, 1: others, 2: notify
+        message: msg.text,
+        nickname: msg.nickname,
+      })
+    })
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     sendMessage() {
-
+      this.chat.sendMessage({
+        room: this.room,
+        text: this.message,
+      })
+      this.messageList.push({
+        type: 0,
+        message: this.message,
+        nickname: this.nickname,
+      })
+      this.message = ''
     },
   },
+  beforeDestroy() {
+    this.socket.emit('disconnect')
+  }
 }
 </script>
 
@@ -57,7 +130,7 @@ export default {
   width 980px
   height 100%
   margin 0 auto
-  padding 30px
+  padding 20px
   .msg-box
     display flex
     flex-direction column
@@ -69,9 +142,45 @@ export default {
       font-size 20px
       font-weight bold
       background-color #e9eef3
+      line-height 40px
     .content
       flex 1
+      padding 20px
       overflow-y auto
+      .nickname
+        line-height 36px
+        color #999
+      .message
+        position relative
+        display inline-block
+        max-width 80%
+        padding 0 10px
+        line-height 36px
+        background-color #e9eef3
+        border-radius 5px
+      .left-angle:before,
+      .right-angle:before
+        content: ''
+        position absolute
+        top -14px
+        width 0
+        height 0
+        border 8px solid transparent
+        border-bottom 8px solid #e9eef3
+      .left-angle:before
+        left 0
+      .right-angle:before
+        right 0
+      .self
+        text-align right
+      .notify-box
+        text-align center
+        .notify
+          display inline-block
+          padding 0 10px
+          background-color #cdcdcd
+          color #fff
+          border-radius 3px
   .send-box
     display flex
     margin-top 20px
@@ -82,4 +191,8 @@ export default {
     padding 20px
     background-color #e9eef3
     border-radius 3px
+@media screen and (max-width: 980px)
+  .container
+    width 100%
+  
 </style>

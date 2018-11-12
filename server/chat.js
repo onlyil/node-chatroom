@@ -68,7 +68,8 @@ class Chat {
   handleMsgBroadcast(socket) {
     socket.on('message', msg => {
       socket.broadcast.to(msg.room).emit('message', {
-        text: `${this.nickNames[socket.id]}: ${msg.text}`,
+        text: msg.text,
+        nickname: this.nickNames[socket.id],
       })
     })
   }
