@@ -2,7 +2,7 @@
   <div class="container">
     <div class="msg-box">
       <div class="room-name">{{ room }}</div>
-      <div class="content">
+      <div class="content" ref="content">
         <div
           class="message-item"
           v-for="(item, index) in messageList"
@@ -82,27 +82,7 @@ export default {
   created() {
     this.socket = io(env.socketUrl)
     this.chat = new Chat(this.socket)
-    this.socket.on('connect', () => {
-      console.log('连接了！！')
-    })
-    this.socket.on('nameResult', (msg) => {
-      this.nickname = msg.name
-      this.$notify({
-        title: '提示',
-        message: `初始名字为 ${msg.name} ，您可以使用命令修改`,
-        duration: 3000,
-      })
-    })
-    this.socket.on('joinResult', (msg) => {
-      this.room = msg.room
-    })
-    this.socket.on('message', (msg) => {
-      this.messageList.push({
-        type: 1, // 0: self, 1: others, 2: notify
-        message: msg.text,
-        nickname: msg.nickname,
-      })
-    })
+    this.addListener()
   },
   mounted() {},
   methods: {
@@ -117,6 +97,47 @@ export default {
         nickname: this.nickname,
       })
       this.message = ''
+      const content = this.$refs.content
+      content.scrollTop = content.scrollHeight
+    },
+    addListener() {
+      this.socket.on('connect', () => {
+        console.log('连接了！！')
+      })
+      this.socket.on('nameResult', (msg) => {
+        this.nickname = msg.name
+        this.$notify({
+          title: '提示',
+          message: `初始名字为 ${msg.name} ，您可以使用命令修改`,
+          duration: 3000,
+        })
+      })
+      this.socket.on('joinResult', (msg) => {
+        this.room = msg.room
+      })
+      this.socket.on('message', (msg) => {
+        this.messageList.push({
+          type: 1, // 0: self, 1: others, 2: notify
+          message: msg.text,
+          nickname: msg.nickname,
+        })
+        this.scrollToBottom()
+      })
+      this.socket.on('notify', (msg) =>{
+        this.messageList.push({
+          type: 2, // 0: self, 1: others, 2: notify
+          message: msg.text,
+        })
+        this.scrollToBottom()
+      })
+    },
+    scrollToBottom() {
+      const content = this.$refs.content
+      this.$nextTick(() => {
+        if (content.scrollHeight - content.scrollTop < 458) {
+          content.scrollTop = content.scrollHeight
+        }
+      })
     },
   },
   beforeDestroy() {
@@ -134,7 +155,7 @@ export default {
   .msg-box
     display flex
     flex-direction column
-    height 400px
+    height 500px
     border 1px solid #DCDFE6
     border-radius 3px
     .room-name
@@ -174,6 +195,7 @@ export default {
       .self
         text-align right
       .notify-box
+        margin 10px 0
         text-align center
         .notify
           display inline-block

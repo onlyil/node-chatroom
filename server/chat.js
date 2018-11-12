@@ -41,7 +41,7 @@ class Chat {
       socket.emit('joinResult', {
         room,
       })
-      socket.broadcast.to(room).emit('message', {
+      socket.broadcast.to(room).emit('notify', {
         text: `${this.nickNames[socket.id]} enter the room! Welcome!`,
       })
 
@@ -106,7 +106,7 @@ class Chat {
   
   handleDisconnection(socket) {
     socket.on('disconnect', () => {
-      socket.broadcast.to(this.currentRoom[socket.id]).emit('message', {
+      socket.broadcast.to(this.currentRoom[socket.id]).emit('notify', {
         text: `${this.nickNames[socket.id]} leave this room.`,
       })
       this.usedNames = this.usedNames.filter(item => item !== this.nickNames[socket.id])
