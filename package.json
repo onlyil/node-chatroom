@@ -6,9 +6,10 @@
   "author": "only",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --config ./webpack.dev.conf.js --mode development --progress --quiet"
+    "dev": "webpack-dev-server --config ./webpack.dev.conf.js --mode development --progress"
   },
   "dependencies": {
+    "element-ui": "^2.4.9",
     "koa": "^2.6.1",
     "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
@@ -20,11 +21,15 @@
     "@babel/core": "^7.1.5",
     "@babel/preset-env": "^7.1.5",
     "babel-loader": "^8.0.4",
+    "babel-plugin-component": "^1.1.1",
     "css-loader": "^1.0.1",
+    "file-loader": "^2.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
+    "url-loader": "^1.1.2",
     "vue-loader": "^15.4.2",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.5.17",

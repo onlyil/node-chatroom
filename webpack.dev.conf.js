@@ -22,6 +22,13 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
+      {
         test: /\.styl(us)?$/,
         use: [
           'vue-style-loader',
@@ -29,11 +36,19 @@ module.exports = {
           'stylus-loader',
         ]
       },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+        }
+      }
     ],
   },
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
+      '@': path.resolve(__dirname, 'src'),
     },
     extensions: ['.js', '.vue', '.json'],
   },
@@ -53,7 +68,9 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'dist'),
     compress: true,
     open: false,
-    hot: false,
+    hot: true,
     port: 5300,
+    quiet: true,
+    clientLogLevel: 'warning',
   },
 }
