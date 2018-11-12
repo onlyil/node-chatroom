@@ -82,11 +82,15 @@ export default {
   created() {
     this.socket = io(env.socketUrl)
     this.chat = new Chat(this.socket)
+  },
+  mounted() {
     this.addListener()
   },
-  mounted() {},
   methods: {
     sendMessage() {
+      if (!this.message) {
+        return
+      }
       this.chat.sendMessage({
         room: this.room,
         text: this.message,
@@ -98,7 +102,9 @@ export default {
       })
       this.message = ''
       const content = this.$refs.content
-      content.scrollTop = content.scrollHeight
+      this.$nextTick(() => {
+        content.scrollTop = content.scrollHeight - content.clientHeight
+      })
     },
     addListener() {
       this.socket.on('connect', () => {
@@ -135,7 +141,7 @@ export default {
       const content = this.$refs.content
       this.$nextTick(() => {
         if (content.scrollHeight - content.scrollTop < 458) {
-          content.scrollTop = content.scrollHeight
+          content.scrollTop = content.scrollHeight - content.clientHeight
         }
       })
     },
