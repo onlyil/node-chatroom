@@ -42,16 +42,16 @@ class Chat {
         room,
       })
       socket.broadcast.to(room).emit('message', {
-        text: `${name} enter the room! Welcome!`,
+        text: `${this.nickNames[socket.id]} enter the room! Welcome!`,
       })
 
       let usersInRoom
-      this.io.sockets.client((error, clients) => {
+      this.io.sockets.clients((error, clients) => {
         if (error) throw error
         usersInRoom = clients
       })
       // show other users in the room
-      if (usersInRoom.length > 1) {
+      if (usersInRoom && usersInRoom.length > 1) {
         let usersSummary = 'Users currently in room: '
         for (let i in usersInRoom) {
           let userSocketId = usersInRoom[i].id
