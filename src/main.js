@@ -1,10 +1,15 @@
 import Vue from 'vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import {
+  Input,
+  Button,
+  Message,
+} from 'element-ui'
 import App from './App.vue'
 import './assets/styles/app.styl'
 
-Vue.use(ElementUI)
+Vue.use(Input)
+Vue.use(Button)
+Vue.prototype.$message = Message
 
 const vm = new Vue({
   el: '#app',

@@ -109,11 +109,7 @@ export default {
     addListener() {
       this.socket.on('nameResult', (msg) => {
         this.nickname = msg.name
-        this.$notify({
-          title: '提示',
-          message: `初始名字为 ${msg.name} ，您可以使用命令修改`,
-          duration: 3000,
-        })
+        this.$message(`初始名字为 ${msg.name} ，您可以使用命令修改`)
       })
       this.socket.on('joinResult', (msg) => {
         this.room = msg.room

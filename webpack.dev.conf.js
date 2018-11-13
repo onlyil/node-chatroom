@@ -57,7 +57,6 @@ module.exports = {
       template: 'index.html',
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.SourceMapDevToolPlugin(),
     new FriendlyErrorsPlugin({
       compilationSuccessInfo: {
         messages: [`Your application is running here: http://localhost:5300`],
@@ -65,6 +64,7 @@ module.exports = {
     }),
     new VueLoaderPlugin(),
   ],
+  devtool: 'cheap-module-eval-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
     compress: true,
