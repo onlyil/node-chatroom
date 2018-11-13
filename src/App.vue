@@ -73,7 +73,7 @@ export default {
         },
         {
           type: 1,
-          message: 'sasdfsdf 爱死扽龙看 阿龙防老接龙啊负担来看蓝来 了',
+          message: 'ojbk',
           nickname: 'Guest',
         }
       ],
@@ -107,9 +107,6 @@ export default {
       })
     },
     addListener() {
-      this.socket.on('connect', () => {
-        console.log('连接了！！')
-      })
       this.socket.on('nameResult', (msg) => {
         this.nickname = msg.name
         this.$notify({
@@ -140,7 +137,8 @@ export default {
     scrollToBottom() {
       const content = this.$refs.content
       this.$nextTick(() => {
-        if (content.scrollHeight - content.scrollTop < 458) {
+        console.log(content)
+        if (content.scrollHeight - content.scrollTop < 600) {
           content.scrollTop = content.scrollHeight - content.clientHeight
         }
       })

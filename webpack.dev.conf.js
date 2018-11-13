@@ -57,6 +57,7 @@ module.exports = {
       template: 'index.html',
     }),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.SourceMapDevToolPlugin(),
     new FriendlyErrorsPlugin({
       compilationSuccessInfo: {
         messages: [`Your application is running here: http://localhost:5300`],

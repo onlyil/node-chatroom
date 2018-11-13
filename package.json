@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack.dev.conf.js --mode development --progress",
-    "server": "nodemon server/index.js"
+    "server": "nodemon --watch server --watch webpack.dev.conf.js server/index.js"
   },
   "dependencies": {
     "element-ui": "^2.4.9",
