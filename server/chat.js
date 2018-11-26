@@ -3,15 +3,17 @@ const socketIo = require('socket.io')
 class Chat {
   constructor () {
     this.io = null
-    this.gusetNumber = 0
+    this.guestNumber = 0
     this.nickNames = {}
     this.usedNames = []
     this.currentRoom = {}
   }
+  
   initialSocket(server) {
     this.io = socketIo(server)
     this.ioListen()
   }
+
   ioListen() {
     this.io.on('connection', (socket) => {
       this.assignName(socket)
@@ -24,10 +26,10 @@ class Chat {
   }
 
   assignName(socket) {
-    let name = `Guest${this.gusetNumber}`
+    let name = `Guest${this.guestNumber}`
     this.nickNames[socket.id] = name
     this.usedNames.push(name)
-    this.gusetNumber += 1
+    this.guestNumber += 1
     // let user get the name
     socket.emit('nameResult', {
       success: true,
